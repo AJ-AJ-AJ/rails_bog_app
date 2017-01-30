@@ -82,7 +82,7 @@ Your app should be up and running at `localhost:3000`.
 
 #### 2. Add Bootstrap to your project
 
-Rails handles CSS and JavaScript with a system called the asset pipeline. We'll go over it more next week, but for now, here's how to add Bootstrap CSS using the asset pipeline.
+Rails handles CSS and JavaScript with a system called the asset pipeline. Here's how to add Bootstrap CSS using the asset pipeline.
 
 Third-party libraries belong in the `vendor/assets` sub-directory of your Rails app. You'll need to download a Bootstrap CSS file and add it to this directory.  
 

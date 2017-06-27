@@ -103,49 +103,9 @@ Your app should be up and running at `localhost:3000`.
 
 #### 2. Add Bootstrap or Materialize to your project
 
-Rails handles CSS and JavaScript with a system called the asset pipeline. We'll go over it more next week, but for now, here's how to add a CSS library (*just CSS*) using the asset pipeline.
+Search [Ruby Gems](https://rubygems.org/) for a gem that will help you install a styling library (Bootstrap, Materialize, etc.)
 
-Third-party libraries belong in the `vendor/assets` sub-directory of your Rails app. You'll need to download a your library's CSS file and add it to this directory.  
-
-One way you can do that is to use the Terminal. You can use `curl` to make HTTP requests, like `GET`ing the file from a CDN.  Then, you can use the `>` command to save the result of `curl` to a new file inside the `vendor/assets/stylesheets` sub-directory. The entire Terminal bash command will have this format: `curl INSERT YOUR CDN LINK HERE  > vendor/assets/stylesheets/YOUR NEW FILE NAME`.
-
-Examples for Boostrap and Materialize are below, but you may want to find and use the most recent version your CDN if it's no longer the version in the example.
-
-```bash
-$  curl https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css > vendor/assets/stylesheets/bootstrap-3.3.7.min.css
-$  curl https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css > vendor/assets/stylesheets/materialize-0.98.2.min.css
-```
-You should see that that file is now in your project's directory.
-
-To include the CSS from the library file you just downloaded into your pages, require it in `app/assets/stylesheets/application.css`.
-
-Find the line where it says `*= require_tree .`, and add a new line above it as follows:
-
-```css
-/*
- * app/assets/stylesheets/application.css
- */
-
-/*
- *
- *= require bootstrap-3.3.7.min
- *= require_tree .
- *= require_self
- */
-```
-or 
-```css
-/*
- * app/assets/stylesheets/application.css
- */
-
-/*
- *
- *= require materialize-0.98.2.min
- *= require_tree .
- *= require_self
- */
-```
+**Note**: If you recieve errors about jQuery not being available, that is because the jQuery gem was removed as a default gem in Rails 5.  You can install it here [jQuery Rails](https://rubygems.org/gems/jquery-rails)
 
 #### 3. Define the `root` and creatures `index` routes
 

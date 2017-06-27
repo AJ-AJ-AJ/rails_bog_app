@@ -17,24 +17,23 @@ It's time to put all your Rails knowledge into practice! In this project, you wi
 
 You'll work through this project as a "time trial." You will be building the app 4 times, each time gaining skills through repetition. Here's how we want you to work:
 
-  1. Start by making a `first-run` branch: `git checkout -b first-run`. Move through the instructions below to build your bog app. Use as many hints as you'd like to check your work and make sure you get through the lab smoothly. Commit your work along the way and at the conclusion. If you get stuck at any point, feel free to reference the [solution branch](../../tree/solution).
-  2. Reset your progress to the beginning by checking out master again `git checkout master` then make a `second-run` branch: `git checkout -b second-run`. Go through the lab another time. This time, time yourself on how long it takes you. Push yourself to peek at the hints more sparingly and code as much as you can on your own. Try not reference the solutions branch; you can look at your own first branch if you're stuck.  Again, make sure to commit your work.
-  3. Reset your progress to the beginning by checking out master again `git checkout master` then make a `third-run` branch: `git checkout -b third-run`. Repeat the lab a third time. Try not to use the instructions to build your bog app and refer to them only when very stuck. Time yourself again and aim to build the app faster than you built it the second time around. Make sure you have roughly the same number of commits as you had on your second run. Version control isn't the place to cut corners!
-  4. Reset your progress to the beginning by checking out master again `git checkout master` then make a `fourth-run` branch: `git checkout -b fourth-run`. Time yourself. This is the fourth time; streamline your process. Squash bugs faster and try not to look at the resources. Commit often and build it as fast as you can!
+  1. Start by making a parent folder that will hold each of your trial apps.
+  1. Move through the instructions below to build your bog app. Use as many hints as you'd like to check your work and make sure you get through the lab smoothly. Commit your work along the way and at the conclusion. If you get stuck at any point, feel free to reference the [solution branch](../../tree/solution). Take notes on your workflow.
+  1. When you've finished a run, go back to the parent folder and make a new rails app. Make sure you name it differently (e.g. `bog-app-one`, `bog-app-two`)! Watch out that you're not in a nested rails app folder!
+  1. Go through the lab another time. This time, time yourself on how long it takes you. Push yourself to peek at the hints more sparingly and code as much as you can on your own. Try not reference the solution; you can look at your first rails app if you're stuck.  Again, make sure to commit your work.
+  1. Repeat the lab a third time. Try not to use the instructions to build your bog app and refer to them only when very stuck. Time yourself again and aim to build the app faster than you built it the second time around. Make sure you have roughly the same number of commits as you had on your second run. Version control isn't the place to cut corners!
+  1. Repeat the lab a fourth time. Time yourself. Try to streamline your process. Squash bugs faster and try not to look at any resources. Commit often and build it as fast as you can!
 
 
 <img src="https://camo.githubusercontent.com/d758d1c1a85e7829d11df73ea25820533db881e7/687474703a2f2f692e67697068792e636f6d2f545467647a75545766784d566439716a4262712e676966" width="40%">
 
 ### Submission
 
-When you're finished with your timed runs, edit the README on your master branch with an introduction paragraph that includes:
+When you're finished with your timed runs, edit the README to add an introduction paragraph that includes:
 
  - a 3-5 sentences reflection on how this went for you  
  - a tip for others to help conquer some part of the app that used to trip you up  
- - the times for your first and fourth runs     
-
-Add a link to your bog app repo on the "My Work" section of your personal website.
-
+ - the times for your first and fourth runs
 
 
 ## Background
@@ -51,7 +50,7 @@ Or maybe Sir Didymus and The Bog of Eternal Stench...
 
 ## CRUD and REST Reference
 
-REST stands for **REpresentational State Transfer**. We will strictly adhere to RESTful routing for Rails.
+REST stands for **REpresentational State Transfer**. We will strictly adhere to RESTful *routing* for Rails.
 
 | Verb | Path | Action | Used for |
 | :--- | :--- | :--- | :--- |
@@ -67,33 +66,60 @@ REST stands for **REpresentational State Transfer**. We will strictly adhere to 
 
 ![](https://camo.githubusercontent.com/58b675eee577ccb1f4b57b14e58761b3fa56a3b8/687474703a2f2f692e67697068792e636f6d2f313149334f7346524c6b514951552e676966)
 
-#### 1. Set up a new Rails project
+#### 0. Create a folder that will (eventually) contain four rails apps
+Only do this step the first time:
 
-Fork this repo, and clone it into your wdi folder on your local machine. Change directories into `rails-bog-app`, and create a new Rails project:
-
-```zsh
-➜  rails new bog_app -T -d postgresql
-➜  cd bog_app
-➜  rails db:create
-➜  rails s
+```bash
+mkdir bog-app-time-trials
+cd bog-app-time-trials
 ```
 
+#### 1. Set up a new Rails project
+(Write down your start time!!!)
+
+Create a new Rails project:
+
+```bash
+$  rails new bog_app_three -T -d postgresql
+$  cd bog_app_three
+$  rails db:create
+$  rails s
+```
+
+Create your development database:
+```bash
+$  rails db:create
+```
+
+> Watch Out! *If you're not careful, you may already have an existing/old database called bog_app_one or bog_app_two!*
+
+Run your local server:
+```bash
+$  rails s
+```
 Your app should be up and running at `localhost:3000`.
 
-#### 2. Add Bootstrap to your project
+> Watch Out! *You may already have a server running on localhost:3000!*
 
-Rails handles CSS and JavaScript with a system called the asset pipeline. Here's how to add Bootstrap CSS using the asset pipeline.
+#### 2. Add Bootstrap or Materialize to your project
 
-Third-party libraries belong in the `vendor/assets` sub-directory of your Rails app. You'll need to download a Bootstrap CSS file and add it to this directory.  
+Rails handles CSS and JavaScript with a system called the asset pipeline. We'll go over it more next week, but for now, here's how to add a CSS library (*just CSS*) using the asset pipeline.
 
-One way you can do that is to use the following Terminal command to download the Bootstrap CSS file (via `curl`) and save it in a new `bootstrap-3.3.6.min.css` file inside the `vendor/assets/stylesheets` sub-directory. You may want to find and use the most recent version of Bootstrap if it's no longer 3.3.6.
+Third-party libraries belong in the `vendor/assets` sub-directory of your Rails app. You'll need to download a your library's CSS file and add it to this directory.  
 
-```zsh
-➜  curl https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css > vendor/assets/stylesheets/bootstrap-3.3.6.min.css
+One way you can do that is to use the Terminal. You can use `curl` to make HTTP requests, like `GET`ing the file from a CDN.  Then, you can use the `>` command to save the result of `curl` to a new file inside the `vendor/assets/stylesheets` sub-directory. The entire Terminal bash command will have this format: `curl INSERT YOUR CDN LINK HERE  > vendor/assets/stylesheets/YOUR NEW FILE NAME`.
+
+Examples for Boostrap and Materialize are below, but you may want to find and use the most recent version your CDN if it's no longer the version in the example.
+
+```bash
+$  curl https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css > vendor/assets/stylesheets/bootstrap-3.3.7.min.css
+$  curl https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css > vendor/assets/stylesheets/materialize-0.98.2.min.css
 ```
 You should see that that file is now in your project's directory.
 
-To include the CSS from the Bootstrap file you just downloaded into your pages, require it in `app/assets/stylesheets/application.css`:
+To include the CSS from the library file you just downloaded into your pages, require it in `app/assets/stylesheets/application.css`.
+
+Find the line where it says `*= require_tree .`, and add a new line above it as follows:
 
 ```css
 /*
@@ -102,7 +128,20 @@ To include the CSS from the Bootstrap file you just downloaded into your pages, 
 
 /*
  *
- *= require bootstrap-3.3.6.min
+ *= require bootstrap-3.3.7.min
+ *= require_tree .
+ *= require_self
+ */
+```
+or 
+```css
+/*
+ * app/assets/stylesheets/application.css
+ */
+
+/*
+ *
+ *= require materialize-0.98.2.min
  *= require_tree .
  *= require_self
  */
@@ -115,8 +154,9 @@ In your text editor, open up `config/routes.rb`. Inside the routes `draw` block,
 > _You're about to see a hint! Throughout the instructions, there will be hints like this one that show you parts of the code. When you're running through the project a second time, try to use these less. The third time, try not to use them at all._
 
 <details>
-  <summary>Hint: `routes.rb` should now look exactly like this...</summary>
+  <summary>Hint: <code>config/routes.rb</code> should now look exactly like this...</summary>
   <p>
+  
   ```ruby
   #
   # config/routes.rb
@@ -125,6 +165,7 @@ In your text editor, open up `config/routes.rb`. Inside the routes `draw` block,
 
   end
   ```
+  
   </p>
 </details>
 <br>
@@ -132,8 +173,9 @@ In your text editor, open up `config/routes.rb`. Inside the routes `draw` block,
 Your routes tell your app how to direct **HTTP requests** to **controller actions**. Define your `root` route and your creatures `index` route to refer to the index method in the creatures controller:
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated routes</summary>
   <p>
+  
   ```ruby
   #
   # config/routes.rb
@@ -146,8 +188,10 @@ Your routes tell your app how to direct **HTTP requests** to **controller action
 
   end
   ```
+  
   </p>
 </details>
+<br>
 
 
 
@@ -157,14 +201,15 @@ In the Terminal, running `rails routes` will list all your routes. You'll see th
 
 Run the following command in the Terminal to generate a controller for creatures:
 
-```zsh
-➜  rails g controller creatures
+```bash
+$  rails g controller creatures
 ```
 
 Next, define the `creatures#index` action in the creatures controller. The variable `@creatures` should be all of the creatures in the db:
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated controller</summary>
+  
   ```ruby
   #
   # app/controllers/creatures_controller.rb
@@ -179,31 +224,34 @@ Next, define the `creatures#index` action in the creatures controller. The varia
     end
   end
   ```
+  
 </details>
 
 
 
 
-#### 5. Set up the creature model
+#### 5. Set up the `creature` model
 
 Run the following command in the Terminal to generate the `Creature` model:
 
-```zsh
-➜  rails g model creature name description
+```bash
+$  rails g model creature name description
 ```
 
 Run the migration to update the database with this change:
 
-```zsh
-➜  rails db:migrate
+```bash
+$  rails db:migrate
 ```
+
+> Watch Out! *If you're not careful, you may already have an existing/old database called bog_app_one or bog_app_two, and it may already contain a table called `creatures`!*
 
 #### 6. Create a creature
 
 In the Terminal, enter the Rails console. The Rails console is built on top of `irb`, and it has access to your Rails project. Use it to create a new instance of a creature.  This just lets us confirm that the model class is set up and the migration has run successfully.
 
 ```zsh
-➜  rails c
+$  rails c
 irb(main):001:0> Creature.create({name: "Yoda", description: "Little green man"})
 ```
 
@@ -214,12 +262,14 @@ When you create an application in development, you typically want some mock data
 Back in Atom, add some seed data to `db/seeds.rb`:
 
 ```ruby
+
 #
 # db/seeds.rb
 #
 
 Creature.create({name: "Luke", description: "Jedi"})
 Creature.create({name: "Darth Vader", description: "Father of Luke"})
+
 ```
 
 In the Terminal (not inside rails console!), run `rails db:seed`. Note that the seed file will also run every time you run `rails db:reset` to reset your database.
@@ -231,8 +281,9 @@ If you look inside the `app/views` directory, the `/creatures` folder has alread
 Inside your creatures index view, iterate through all the creatures in the database, and display them on the page:
 
 <details>
-  <summary>Here's one way that could look:</summary>
+  <summary>Hint: Here's one way that could look:</summary>
   <p>
+  
   ```html
   <!-- app/views/creatures/index.html.erb -->
 
@@ -243,17 +294,19 @@ Inside your creatures index view, iterate through all the creatures in the datab
     </p>
   <% end %>
   ```
+  
   </p>
 </details>
 <br>
 
-#### 9. Update the layout to use Bootstrap classes.
+#### 9. Update the layout to use Bootstrap or Materialize classes.
 
-Bootstrap is set up in this project, but it's not used yet.  In your application's main layout (`app/views/layouts/application.html.erb`), add the basic structure container/row/column structure Bootstrap uses, around the `<%= yield %>`.
+You've set up a CSS library in this project, but you haven't used it yet.  In your application's main layout (`app/views/layouts/application.html.erb`), add the basic container/row/column structure your library uses, around the `<%= yield %>`.
 
 <details>
-  <summary>Here's one way that could look:</summary>
+  <summary>Hint: Here's one way that could look for Bootstrap:</summary>
   <p>
+  
   ```html
   <!-- app/views/layouts/application.html.erb -->
   <!--  ...  -->
@@ -267,6 +320,29 @@ Bootstrap is set up in this project, but it's not used yet.  In your application
     </div>
   </body>
   ```
+  
+  </p>
+</details>
+<br>
+
+<details>
+  <summary>Hint: Here's one way that could look for Materialize:</summary>
+  <p>
+  
+  ```html
+  <!-- app/views/layouts/application.html.erb -->
+  <!--  ...  -->
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col m6 offset-m3">
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </body>
+  ```
+  
   </p>
 </details>
 <br>
@@ -284,8 +360,9 @@ Go to `localhost:3000` in the browser. What do you see on the page? If you haven
 The Rails convention is to make a form for new creatures at the `/creatures/new` path in our browser.
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated routes</summary>
   <p>
+  
   ```ruby
   #
   #/config/routes.rb
@@ -298,6 +375,7 @@ The Rails convention is to make a form for new creatures at the `/creatures/new`
     get "/creatures/new", to: "creatures#new", as: "new_creature"
   end
   ```
+  
   </p>
 </details>
 <br>
@@ -307,8 +385,9 @@ The Rails convention is to make a form for new creatures at the `/creatures/new`
 When a user sends a GET request to `/creatures/new`, your server will search for a `creatures#new` action, so you need to create a controller method to handle this request. `creatures#new` should render the view `new.html.erb` inside the `app/views/creatures` folder.
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated controller</summary>
   <p>
+  
   ```ruby
   #
   # app/controllers/creatures_controller.rb
@@ -325,6 +404,7 @@ When a user sends a GET request to `/creatures/new`, your server will search for
 
   end
   ```
+  
   </p>
 </details>
 
@@ -333,8 +413,9 @@ When a user sends a GET request to `/creatures/new`, your server will search for
 Create the view `new.html.erb` inside the `app/views/creatures` folder. On this view, users should see a form to create new creatures in the database.
 
 <details>
-  <summary>Here's one way that could look:</summary>
+  <summary>Hint: here's one way that could look:</summary>
   <p>
+  
   ```html
   <!-- app/views/creatures/new.html.erb -->
 
@@ -344,6 +425,7 @@ Create the view `new.html.erb` inside the `app/views/creatures` folder. On this 
     <%= f.submit "Save Creature" %>
   <% end %>
   ```
+  
   </p>
 </details>
 
@@ -356,7 +438,7 @@ Go to `localhost:3000/creatures/new` in the browser, and inspect the HTML for th
 Your new creature form has `action="/creatures"` and `method="POST"`. The `POST /creatures` route doesn't exist yet, so go ahead and create it!
 
 <details>
-  <summary> Hint:</summary>
+  <summary> Hint: updated routes</summary>
   <p>
 
   ```ruby
@@ -373,6 +455,7 @@ Your new creature form has `action="/creatures"` and `method="POST"`. The `POST 
 
   end
   ```
+  
   </p>
 </details>
 
@@ -381,7 +464,32 @@ Your new creature form has `action="/creatures"` and `method="POST"`. The `POST 
 The `POST /creatures` maps to the `creatures#create` controller action, so the next step is to define the controller method to handle this request. `creatures#create` should add a new creature to the database.
 
 <details>
-  <summary>The code:</summary>
+  <summary>Hint: pseudocode</summary>
+  <p>
+
+  ```ruby
+  #
+  # app/controllers/creatures_controller.rb
+  #
+
+  class CreaturesController < ApplicationController
+
+    # ...
+
+    def create
+      # whitelist params
+      # create a new creature in the database from the params
+      # if creature saves, redirect to route that displays all creatures
+    end
+  end
+  ```
+  
+  </p>
+</details>
+
+<br>
+<details>
+  <summary>Hint: the code:</summary>
   <p>
 
   ```ruby
@@ -410,6 +518,7 @@ The `POST /creatures` maps to the `creatures#create` controller action, so the n
     end
   end
   ```
+  
   </p>
 </details>
 
@@ -418,7 +527,7 @@ The `POST /creatures` maps to the `creatures#create` controller action, so the n
 Update your `creatures#new` action to send a new instance of a `Creature` to the new creature form.
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated controller</summary>
   <p>
 
   ```ruby
@@ -438,14 +547,16 @@ Update your `creatures#new` action to send a new instance of a `Creature` to the
 
   end
   ```
+  
   </p>
 </details>
 
 This sets `@creature` to a new instance of a `Creature`, which is automatically shared with the form in `views/creatures/new.html.erb`. This allows you to refactor the code for the `form_for` helper.
 
 <details>
-  <summary>It might look something like this:</summary>
+  <summary>Hint: It might look something like this:</summary>
   <p>
+  
   ```html
   <!-- app/views/creatures/new.html.erb -->
 
@@ -455,6 +566,7 @@ This sets `@creature` to a new instance of a `Creature`, which is automatically 
     <%= f.submit "Save Creature" %>
   <% end %>
   ```
+  
   </p>
 </details>
 
@@ -467,8 +579,9 @@ Right now, your app redirects to `/creatures` after creating a new creature, and
 First, define a `show` route.
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated routes</summary>
   <p>
+  
   ```ruby
   #
   # config/routes.rb
@@ -483,13 +596,14 @@ First, define a `show` route.
     get "/creatures/:id", to: "creatures#show", as: "creature"
   end
   ```
+  
   </p>
 </details>
 
 Now that you have your `show` route, set up the controller action for `creatures#show`.
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated controller</summary>
   <p>
 
   ```ruby
@@ -516,20 +630,23 @@ Now that you have your `show` route, set up the controller action for `creatures
 
   end
   ```
+  
   </p>
 </details>
 
 Next, create the view to display a single creature:
 
 <details>
-  <summary>It might look like this:</summary>
+  <summary>Hint: It might look like this:</summary>
   <p>
+  
   ```html
   <!-- app/views/creatures/show.html.erb -->
 
   <h3><%= @creature.name %></h3>
   <p><%=  @creature.description %></p>
   ```
+  
   </p>
 </details>
 
@@ -538,8 +655,35 @@ Next, create the view to display a single creature:
 The `creatures#create` method currently redirects to `/creatures`. Again, this isn't very helpful for users who want to verify that they successfully created a *single* creature. The best way to fix this is to have it redirect to `/creatures/:id` instead.
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated pseudocode</summary>
   <p>
+  
+  ```ruby
+  #
+  # app/controllers/creatures_controller.rb
+  #
+
+  class CreaturesController < ApplicationController
+
+    ...
+
+    def create
+      # whitelist params 
+      # create a new creature from `creature_params`
+      # if creature saves, redirect to route that displays ONLY the newly created creature
+    end
+  end
+  ```
+  
+  </p>
+</details>
+<br>
+
+
+<details>
+  <summary>Hint: updated  code</summary>
+  <p>
+  
   ```ruby
   #
   # app/controllers/creatures_controller.rb
@@ -568,6 +712,7 @@ The `creatures#create` method currently redirects to `/creatures`. Again, this i
 
   end
   ```
+  
   </p>
 </details>
 
@@ -589,8 +734,9 @@ Editing a specific creature requires two methods:
 #### 1. Define a route for the `edit` creature form
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated routes</summary>
   <p>
+  
   ```ruby
   #
   # config/routes.rb
@@ -606,16 +752,46 @@ Editing a specific creature requires two methods:
     get "/creatures/:id/edit", to: "creatures#edit", as: "edit_creature"
   end
   ```
+  
   </p>
 </details>
 
 #### 2. Set up the creatures `edit` action
 
-Using your `creatures#new` and `creatures#show` method as inspiration, you can write the `creatures#edit` method in the creatures controller:
+Using your `creatures#new` and `creatures#show` methods as inspiration, you can write the `creatures#edit` method in the creatures controller:
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated controller pseudocode</summary>
   <p>
+  
+  ```ruby
+  #
+  # app/controllers/creatures_controller.rb
+  #
+
+  class CreaturesController < ApplicationController
+
+    ...
+
+    # show the edit creature form
+    def edit
+      # get the creature id from the url params
+      
+      # use `creature_id` to find the creature in the database
+        # and save it to an instance variable
+      # render the edit view (it has access to instance variable)
+    end
+  end
+  ```
+  
+  </p>
+</details>
+
+
+<details>
+  <summary>Hint: updated controller code</summary>
+  <p>
+  
   ```ruby
   #
   # app/controllers/creatures_controller.rb
@@ -640,6 +816,7 @@ Using your `creatures#new` and `creatures#show` method as inspiration, you can w
 
   end
   ```
+  
   </p>
 </details>
 
@@ -648,8 +825,9 @@ Using your `creatures#new` and `creatures#show` method as inspiration, you can w
 Create an `edit.html.erb` view inside `views/creatures`. Jump-start the edit form by copying the form from `views/creatures/new.html.erb` into `views/creatures/edit.html.erb`:
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: it might look like this</summary>
   <p>
+  
   ```html
   <!-- app/views/creatures/edit.html.erb -->
 
@@ -659,6 +837,7 @@ Create an `edit.html.erb` view inside `views/creatures`. Jump-start the edit for
     <%= f.submit "Save Creature" %>
   <% end %>
   ```
+  
   </p>
 </details>
 
@@ -666,11 +845,12 @@ Go to `localhost:3000/creatures/1/edit` in the browser to see what it looks like
 
 #### 4. Define a route to `update` a specific creature
 
-The update route will use the `id` of the creature to be updated. In Express, you decided between `PUT /creatures/:id` and `PATCH /creatures/:id`, depending on the type of update you wanted to do. In Rails, we'll need to add `PATCH /creatures/:id` only to our routes.
+The update route will use the `id` of the creature to be updated. In Express, you decided between `PUT /creatures/:id` and `PATCH /creatures/:id`, depending on the type of update you wanted to do. In Rails, the default assumption is that you'll have both! However, we'll only **need** to add `PATCH /creatures/:id` to our routes.
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated routes</summary>
   <p>
+  
   ```ruby
   #
   # config/routes.rb
@@ -685,8 +865,10 @@ The update route will use the `id` of the creature to be updated. In Express, yo
     get "/creatures/:id", to: "creatures#show", as: "creature"
     get "/creatures/:id/edit", to: "creatures#edit", as: "edit_creature"
     patch "/creatures/:id", to: "creatures#update"
+    # put "/creatures/:id", to: "creatures#update"    # optional
   end
   ```
+  
   </p>
 </details>
 
@@ -697,7 +879,37 @@ Run `rails routes` in the Terminal to see the newly created update routes.
 In the `CreaturesController`, define an `update` method:
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: pseudocode</summary>
+  <p>
+
+  ```ruby
+  #
+  # app/controllers/creatures_controller.rb
+  #
+
+  class CreaturesController < ApplicationController
+
+    ...
+
+    # update a creature in the database
+    def update
+      # get the creature id from the url params
+      # use `creature_id` to find the creature in the database and save to variable
+      # whitelist params 
+      # update the creature based on params
+      # redirect to show page for the updated creature
+    end
+
+  end
+  ```
+  
+  </p>
+</details>
+<br>
+
+
+<details>
+  <summary>Hint: code</summary>
   <p>
 
   ```ruby
@@ -731,6 +943,7 @@ In the `CreaturesController`, define an `update` method:
 
   end
   ```
+  
   </p>
 </details>
 
@@ -738,8 +951,43 @@ In the `CreaturesController`, define an `update` method:
 
 Now that `params` are whitelisted in two different places in the `CreaturesController`, refactor so that these params are set up in their own method.   This method can (and should!) be `private` because it will only ever be used inside the `CreaturesController` class definition.
 
+
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: pseudocode</summary>
+  <p>
+
+  ```ruby
+  #
+  # app/controllers/creatures_controller.rb
+  #
+
+  class CreaturesController < ApplicationController
+
+    ...
+
+    # update a creature in the database
+    def update
+      # get the creature id from the url params
+      # use `creature_id` to find the creature in the database
+        # and save it to an instance variable
+      # update the creature based on whitelisted params returned by private method
+      # redirect to show page for the updated creature
+    end
+    
+    private
+    
+    def creature_params
+      # whitelist params return whitelisted version
+    end
+
+  end
+  ```
+  </p>
+</details>
+<br>
+
+<details>
+  <summary>Hint: code</summary>
   <p>
 
   ```ruby
@@ -781,7 +1029,7 @@ Now that `params` are whitelisted in two different places in the `CreaturesContr
   </p>
 </details>
 
-Refactor the `create` action to use this private method as well. 
+**Refactor the `create` action to use this private method as well.**
 
 
 Manually re-test your `creatures#create` method in the browser. Then, test your `creatures#update` method in the browser by editing the creature with an `id` of 1 (go to `localhost:3000/creatures/1/edit`). Then, `git add` and `git commit` your work.
@@ -798,7 +1046,7 @@ Manually re-test your `creatures#create` method in the browser. Then, test your 
 Following a similar pattern to our other routes, create a route to `destroy` (delete) a specific creature based on its `id`.
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: updated routes</summary>
   <p>
 
   ```ruby
@@ -818,10 +1066,11 @@ Following a similar pattern to our other routes, create a route to `destroy` (de
     delete "/creatures/:id", to: "creatures#destroy"
   end
   ```
+  
   </p>
 </details>
 
-At this point, you're using all the RESTful routes for creatures.
+At this point, you're using all the required RESTful routes for creatures (feel free to add optional PUT).
 
 
 #### 2. Set up the creatures `destroy` action
@@ -829,8 +1078,36 @@ At this point, you're using all the RESTful routes for creatures.
 In the `CreaturesController`, define an `destroy` method:
 
 <details>
-  <summary>Hint:</summary>
+  <summary>Hint: pseudocode</summary>
   <p>
+  
+  ```ruby
+  #
+  # app/controllers/creatures_controller.rb
+  #
+
+  class CreaturesController < ApplicationController
+
+    ...
+
+    # delete a creature from the database
+    def destroy
+      # get the creature id from the url params
+      # use `creature_id` to find the creature in the database and save it to a variable
+      # destroy the creature
+      # redirect to creatures index
+    end
+
+  end
+  ```
+  
+  </p>
+</details>
+<br>
+<details>
+  <summary>Hint: code</summary>
+  <p>
+  
   ```ruby
   #
   # app/controllers/creatures_controller.rb
@@ -846,7 +1123,7 @@ In the `CreaturesController`, define an `destroy` method:
       creature_id = params[:id]
 
       # use `creature_id` to find the creature in the database
-      # and save it to an instance variable
+      # and save it to a variable
       creature = Creature.find_by_id(creature_id)
 
       # destroy the creature
@@ -860,6 +1137,7 @@ In the `CreaturesController`, define an `destroy` method:
 
   end
   ```
+  
   </p>
 </details>
 
@@ -867,7 +1145,7 @@ In the `CreaturesController`, define an `destroy` method:
 
 Add a delete button to the view that displays a single creature:
 <details>
-  <summary>It could look something like:</summary>
+  <summary>Hint: It could look something like:</summary>
   <p>
 
 ```html
@@ -877,6 +1155,7 @@ Add a delete button to the view that displays a single creature:
 <p><%=  @creature.description %></p>
 <%= button_to "Delete", @creature, method: :delete %>
 ```
+
   </p>
 </details>
 
@@ -884,10 +1163,12 @@ Visit `localhost:3000/creatures/1` in the browser, and inspect the HTML for the 
 
 At this point, you've created all the RESTful routes, implemented controller actions for each route, and made views for `index`, `show`, `new`, and `edit`. You've also created the `Creature` model in the database and manually tested that everything works.
 
-## Additional Development Ideas
+(Write down your stop time!!! How long did this run take?)
+
+## Additional Development Ideas for after Version 4
 
 * Add links to other pages to help users navigate your site. For instance, a creature show page might have a link to the creatures index page. Use `link_to`.  Also link each creature on `creatures#index` to its individual `show` page.
-* If you'd like, add a Bootstrap `navbar` with links to the homepage (`/`) and the new creatures page (`/creatures/new`). This navbar should show up on every page. 
+* If you'd like, add a `navbar` with links to the homepage (`/`) and the new creatures page (`/creatures/new`). This navbar should show up on every page. Take advantage of whichever CSS library you chose to include!
 * Read about [Active Record Validations](http://guides.rubyonrails.org/active_record_validations.html), and add validations to the `Creature` model to make sure a new creature can't be created without a `name` and `description`.
 * Read the docs for the [Paperclip gem](https://github.com/thoughtbot/paperclip), and incorporate it into your Bog App to upload photos of creatures locally.
 

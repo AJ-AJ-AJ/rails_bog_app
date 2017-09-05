@@ -219,7 +219,7 @@ irb(main):001:0> Creature.create({name: "Yoda", description: "Little green man"}
 
 When you create an application in development, you typically want some mock data to play with. In Rails, you can just drop this into the `db/seeds.rb` file.
 
-Back in Atom, add some seed data to `db/seeds.rb`:
+Back in your editor, add some seed data to `db/seeds.rb`:
 
 ```ruby
 

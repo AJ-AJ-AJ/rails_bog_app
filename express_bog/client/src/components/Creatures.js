@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 class Creatures extends Component {
   state = {
@@ -12,10 +13,10 @@ class Creatures extends Component {
     return (
       <div>
         {this.state.creatures.map(creature => (
-          <div key={creature._id}>
+          <Link key={creature._id} to={`/${creature._id}`}>
             <p>{creature.name}</p>
             <p>{creature.description}</p>
-          </div>
+          </Link>
         ))}
       </div>
     )

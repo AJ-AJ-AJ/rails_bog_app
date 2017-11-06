@@ -359,6 +359,10 @@ Make sure you follow these commands.
 ```bash
   heroku create
   heroku addons:create mongolab:sandbox
+  git push heroku master
+
+  # If you need to seed your production database
+  heroku run node db/seeds.js
 ```
 
 #### 6. Set up React Router and create Components for Routes
@@ -390,13 +394,24 @@ export default App
 ```
 
 #### 7. Read All and Create New
-Use the `Creatures` component to house components that allow you to get all creatures and also add a toggle to show and hide a form to create a new creature
+Use the `Creatures` component to house components that allow you do the following:
+ - Get All Creatures and display them as a list of `Link`s.
+ - Click a button to toggle a form on and off.
+ - Input data into a form to create a new creature.
+
+Take a look at the [solution code]() for hints
 
 #### 8. Read One, Update, and Delete
 Use the `SingleCreature` component to house components that allow you to get one creature, toggle a form to update the creature, and delete a creature
+Take a look at the [solution code]() for hints
 
 #### 9. Introduce Styled Components
-Once you have the usability for creatures, use styled components to style your application
+Once you have the usability for creatures, use styled components to style your application.
+Keep these things in mind.  Feel free to also bring in libraries like `material-ui`
+
+- Does my app look good on mobile?
+- Can I add transitions and animations to this UI
+- Does this app look professional and polished?
 
 ## Additional Development Ideas for after Version 4
 

@@ -1,4 +1,4 @@
-<!-- # <img src="https://cloud.githubusercontent.com/assets/7833470/10899314/63829980-8188-11e5-8cdd-4ded5bcb6e36.png" height="60"> Rails Bog App
+# <img src="https://cloud.githubusercontent.com/assets/7833470/10899314/63829980-8188-11e5-8cdd-4ded5bcb6e36.png" height="60"> Rails Bog App
 
 ### Overview
 
@@ -1135,4 +1135,4 @@ At this point, you've created all the RESTful routes, implemented controller act
 
 ## CONGRATULATIONS! You have created a Bog App! Take a break, you look *Swamped*!
 
-![](https://cloud.githubusercontent.com/assets/7833470/11501240/83536030-97e7-11e5-8060-fa7666de7165.jpeg) -->
+![](https://cloud.githubusercontent.com/assets/7833470/11501240/83536030-97e7-11e5-8060-fa7666de7165.jpeg)

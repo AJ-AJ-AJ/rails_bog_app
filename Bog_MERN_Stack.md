@@ -62,7 +62,7 @@ REST stands for **REpresentational State Transfer**. We will strictly adhere to 
 | PUT or PATCH | /creatures/:id | update | updating a specific creature in the database |
 | DELETE | /creatures/:id | destroy | deleting a specific creature in the database |
 
-## Part I: Getting Started 
+## Part I: Getting Started
 
 ![](https://camo.githubusercontent.com/58b675eee577ccb1f4b57b14e58761b3fa56a3b8/687474703a2f2f692e67697068792e636f6d2f313149334f7346524c6b514951552e676966)
 
@@ -399,11 +399,11 @@ Use the `Creatures` component to house components that allow you do the followin
  - Click a button to toggle a form on and off.
  - Input data into a form to create a new creature.
 
-Take a look at the [solution code](./express_bog/client) for hints
+Take a look at the [solution code](./express_bog/client/src) for hints
 
 #### 8. Read One, Update, and Delete
 Use the `SingleCreature` component to house components that allow you to get one creature, toggle a form to update the creature, and delete a creature
-Take a look at the [solution code](./express_bog/client) for hints
+Take a look at the [solution code](./express_bog/client/src) for hints
 
 #### 9. Introduce Styled Components
 Once you have the usability for creatures, use styled components to style your application.

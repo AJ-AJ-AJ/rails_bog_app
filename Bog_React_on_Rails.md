@@ -1,4 +1,4 @@
-<!-- # <img src="https://cloud.githubusercontent.com/assets/7833470/10899314/63829980-8188-11e5-8cdd-4ded5bcb6e36.png" height="60"> Rails Bog App
+# <img src="https://cloud.githubusercontent.com/assets/7833470/10899314/63829980-8188-11e5-8cdd-4ded5bcb6e36.png" height="60"> React on Rails Bog App
 
 ### Overview
 
@@ -8,10 +8,9 @@ Everyone does blog apps. Now, you're going to work on a **bog app**. Researchers
 
 It's time to put all your Rails knowledge into practice! In this project, you will:
 
-- Review **CRUD** in the context of a Rails application.  
-- Implement **form helpers** in a  Rails application.  
+- Review **CRUD** in the context of a Rails application.
+- Implement **form helpers** in a  Rails application.
 - Build memory for the steps required to create a Rails app.
-
 
 ### Workflow
 
@@ -80,8 +79,8 @@ cd bog-app-time-trials
 Create a new Rails project:
 
 ```bash
-$  rails new bog_app_three -T -d postgresql
-$  cd bog_app_three
+$  rails new bog_app --api -T -d postgresql
+$  cd bog_app
 $  rails db:create
 $  rails s
 ```
@@ -101,13 +100,7 @@ Your app should be up and running at `localhost:3000`.
 
 > Watch Out! *You may already have a server running on localhost:3000!*
 
-#### 2. Add Bootstrap or Materialize to your project
-
-Search [Ruby Gems](https://rubygems.org/) for a gem that will help you install a styling library (Bootstrap, Materialize, etc.)
-
-**Note**: If you recieve errors about jQuery not being available, that is because the jQuery gem was removed as a default gem in Rails 5.  You can install it here [jQuery Rails](https://rubygems.org/gems/jquery-rails)
-
-#### 3. Define the `root` and creatures `index` routes
+#### 2. Define the `root` and creatures `index` routes
 
 In your text editor, open up `config/routes.rb`. Inside the routes `draw` block, erase all the commented text.
 
@@ -153,8 +146,6 @@ Your routes tell your app how to direct **HTTP requests** to **controller action
 </details>
 <br>
 
-
-
 In the Terminal, running `rails routes` will list all your routes. You'll see that some routes have a "prefix" listed. These routes have associated route helpers, which are methods Rails creates to generate URLs. The format of a route helper is `prefix_path`. For example, `creatures_path` is the full route helper for `GET /creatures` (the creatures index). We often use route helpers to generate URLs in forms, links, and controllers.
 
 #### 4. Set up the creatures controller and `index` action
@@ -162,7 +153,7 @@ In the Terminal, running `rails routes` will list all your routes. You'll see th
 Run the following command in the Terminal to generate a controller for creatures:
 
 ```bash
-$  rails g controller creatures
+$  rails g controller Creatures
 ```
 
 Next, define the `creatures#index` action in the creatures controller. The variable `@creatures` should be all of the creatures in the db:
@@ -181,6 +172,7 @@ Next, define the `creatures#index` action in the creatures controller. The varia
       @creatures = Creature.all
       # render the index view (it has access to instance variable)
       # remember the default behavior is to render :index
+      render json: @creatures
     end
   end
   ```
@@ -195,7 +187,7 @@ Next, define the `creatures#index` action in the creatures controller. The varia
 Run the following command in the Terminal to generate the `Creature` model:
 
 ```bash
-$  rails g model creature name description
+$  rails g model Creature name description
 ```
 
 Run the migration to update the database with this change:
@@ -234,168 +226,16 @@ Creature.create({name: "Darth Vader", description: "Father of Luke"})
 
 In the Terminal (not inside rails console!), run `rails db:seed`. Note that the seed file will also run every time you run `rails db:reset` to reset your database.
 
-#### 8. Set up the creatures `index` view
-
-If you look inside the `app/views` directory, the `/creatures` folder has already been created (this happened when you ran `rails g controller creatures`). Add an `index.html.erb` file to the `app/views/creatures` folder.
-
-Inside your creatures index view, iterate through all the creatures in the database, and display them on the page:
-
-<details>
-  <summary>Hint: Here's one way that could look:</summary>
-  <p>
-  
-  ```html
-  <!-- app/views/creatures/index.html.erb -->
-
-  <% @creatures.each do |creature| %>
-    <p>
-      <strong>Name:</strong> <%= creature.name %><br>
-      <strong>Description:</strong> <%= creature.description %>
-    </p>
-  <% end %>
-  ```
-  
-  </p>
-</details>
-<br>
-
-#### 9. Update the layout to use Bootstrap or Materialize classes.
-
-You've set up a CSS library in this project, but you haven't used it yet.  In your application's main layout (`app/views/layouts/application.html.erb`), add the basic container/row/column structure your library uses, around the `<%= yield %>`.
-
-<details>
-  <summary>Hint: Here's one way that could look for Bootstrap:</summary>
-  <p>
-  
-  ```html
-  <!-- app/views/layouts/application.html.erb -->
-  <!--  ...  -->
-  <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-          <%= yield %>
-        </div>
-      </div>
-    </div>
-  </body>
-  ```
-  
-  </p>
-</details>
-<br>
-
-<details>
-  <summary>Hint: Here's one way that could look for Materialize:</summary>
-  <p>
-  
-  ```html
-  <!-- app/views/layouts/application.html.erb -->
-  <!--  ...  -->
-  <body>
-    <div class="container">
-      <div class="row">
-        <div class="col m6 offset-m3">
-          <%= yield %>
-        </div>
-      </div>
-    </div>
-  </body>
-  ```
-  
-  </p>
-</details>
-<br>
-
-Go to `localhost:3000` in the browser. What do you see on the page? If you haven't already, `git add` and `git commit` the work you've done so far.
+Use Postman to test your new URL endpoint
 
 ## Part II: Make a creature with `new` (form) and `create` (database)
 
 
 <img src="https://media.giphy.com/media/jnVeAppOL9te0/giphy.gif">
 
+#### 1. Define a route to `create` creatures in the database
 
-#### 1. Define a route for the `new` creature form
-
-The Rails convention is to make a form for new creatures at the `/creatures/new` path in our browser.
-
-<details>
-  <summary>Hint: updated routes</summary>
-  <p>
-  
-  ```ruby
-  #
-  #/config/routes.rb
-  #
-
-  Rails.application.routes.draw do
-    root to: "creatures#index"
-
-    get "/creatures", to: "creatures#index", as: "creatures"
-    get "/creatures/new", to: "creatures#new", as: "new_creature"
-  end
-  ```
-  
-  </p>
-</details>
-<br>
-
-#### 2. Set up the creatures `new` action
-
-When a user sends a GET request to `/creatures/new`, your server will search for a `creatures#new` action, so you need to create a controller method to handle this request. `creatures#new` should render the view `new.html.erb` inside the `app/views/creatures` folder.
-
-<details>
-  <summary>Hint: updated controller</summary>
-  <p>
-  
-  ```ruby
-  #
-  # app/controllers/creatures_controller.rb
-  #
-
-  class CreaturesController < ApplicationController
-
-    ...
-
-    # show the new creature form
-    def new
-      # remember the default behavior is to render :new
-    end
-
-  end
-  ```
-  
-  </p>
-</details>
-
-#### 3. Set up the view for the new creature form
-
-Create the view `new.html.erb` inside the `app/views/creatures` folder. On this view, users should see a form to create new creatures in the database.
-
-<details>
-  <summary>Hint: here's one way that could look:</summary>
-  <p>
-  
-  ```html
-  <!-- app/views/creatures/new.html.erb -->
-
-  <%= form_for :creature, url: "/creatures", method: "post" do |f| %>
-    <%= f.text_field :name %>
-    <%= f.text_area :description %>
-    <%= f.submit "Save Creature" %>
-  <% end %>
-  ```
-  
-  </p>
-</details>
-
-**Note:** The URL you're submitting the form to is `/creatures` because it's the database collection for creatures, and the method is `post` because you're *creating* a new creature.
-
-Go to `localhost:3000/creatures/new` in the browser, and inspect the HTML for the form on the page. `form_for` is a "form helper", and it generates more than what you might guess from the `erb` you wrote in the view. Note the `method` and `action` in the form - what route do you think you should define next?
-
-#### 4. Define a route to `create` creatures in the database
-
-Your new creature form has `action="/creatures"` and `method="POST"`. The `POST /creatures` route doesn't exist yet, so go ahead and create it!
+Your API needs to be able to post a new creature.  Let's add a `create` action to our routes 
 
 <details>
   <summary> Hint: updated routes</summary>
@@ -410,7 +250,6 @@ Your new creature form has `action="/creatures"` and `method="POST"`. The `POST 
     root to: "creatures#index"
 
     get "/creatures", to: "creatures#index", as: "creatures"
-    get "/creatures/new", to: "creatures#new", as: "new_creature"
     post "/creatures", to: "creatures#create"
 
   end
@@ -419,7 +258,7 @@ Your new creature form has `action="/creatures"` and `method="POST"`. The `POST 
   </p>
 </details>
 
-#### 5. Set up the creatures `create` action
+#### 2. Set up the creatures `create` action
 
 The `POST /creatures` maps to the `creatures#create` controller action, so the next step is to define the controller method to handle this request. `creatures#create` should add a new creature to the database.
 
@@ -482,56 +321,6 @@ The `POST /creatures` maps to the `creatures#create` controller action, so the n
   </p>
 </details>
 
-#### 6. Refactor the `new` creature form
-
-Update your `creatures#new` action to send a new instance of a `Creature` to the new creature form.
-
-<details>
-  <summary>Hint: updated controller</summary>
-  <p>
-
-  ```ruby
-  #
-  # app/controllers/creatures_controller.rb
-  #
-
-  class CreaturesController < ApplicationController
-
-    ...
-
-    # show the new creature form
-    def new
-      @creature = Creature.new
-      # remember the default behavior is to render :new
-    end
-
-  end
-  ```
-  
-  </p>
-</details>
-
-This sets `@creature` to a new instance of a `Creature`, which is automatically shared with the form in `views/creatures/new.html.erb`. This allows you to refactor the code for the `form_for` helper.
-
-<details>
-  <summary>Hint: It might look something like this:</summary>
-  <p>
-  
-  ```html
-  <!-- app/views/creatures/new.html.erb -->
-
-  <%= form_for @creature do |f| %>
-    <%= f.text_field :name %>
-    <%= f.text_area :description %>
-    <%= f.submit "Save Creature" %>
-  <% end %>
-  ```
-  
-  </p>
-</details>
-
-Go to `localhost:3000/creatures/new` again in the browser, and inspect the HTML for the form on the page. Did anything change?
-
 #### 7. Define a route to `show` a specific creature
 
 Right now, your app redirects to `/creatures` after creating a new creature, and the new creature shows up at the bottom of the page. Let's make a route for users to see a specific creature. Then, you'll be able to show a new creature by itself right after it's created.
@@ -551,7 +340,6 @@ First, define a `show` route.
     root to: "creatures#index"
 
     get "/creatures", to: "creatures#index", as: "creatures"
-    get "/creatures/new", to: "creatures#new", as: "new_creature"
     post "/creatures", to: "creatures#create"
     get "/creatures/:id", to: "creatures#show", as: "creature"
   end
@@ -586,6 +374,7 @@ Now that you have your `show` route, set up the controller action for `creatures
 
       # render the show view (it has access to instance variable)
       # remember the default behavior is to render :show
+      render json: @creature
     end
 
   end
@@ -593,90 +382,6 @@ Now that you have your `show` route, set up the controller action for `creatures
   
   </p>
 </details>
-
-Next, create the view to display a single creature:
-
-<details>
-  <summary>Hint: It might look like this:</summary>
-  <p>
-  
-  ```html
-  <!-- app/views/creatures/show.html.erb -->
-
-  <h3><%= @creature.name %></h3>
-  <p><%=  @creature.description %></p>
-  ```
-  
-  </p>
-</details>
-
-#### 8. Refactor the `creatures#create` redirect
-
-The `creatures#create` method currently redirects to `/creatures`. Again, this isn't very helpful for users who want to verify that they successfully created a *single* creature. The best way to fix this is to have it redirect to `/creatures/:id` instead.
-
-<details>
-  <summary>Hint: updated pseudocode</summary>
-  <p>
-  
-  ```ruby
-  #
-  # app/controllers/creatures_controller.rb
-  #
-
-  class CreaturesController < ApplicationController
-
-    ...
-
-    def create
-      # whitelist params 
-      # create a new creature from `creature_params`
-      # if creature saves, redirect to route that displays ONLY the newly created creature
-    end
-  end
-  ```
-  
-  </p>
-</details>
-<br>
-
-
-<details>
-  <summary>Hint: updated  code</summary>
-  <p>
-  
-  ```ruby
-  #
-  # app/controllers/creatures_controller.rb
-  #
-
-  class CreaturesController < ApplicationController
-
-    ...
-
-    # create a new creature in the database
-    def create
-      # whitelist params and save them to a variable
-      creature_params = params.require(:creature).permit(:name, :description)
-
-      # create a new creature from `creature_params`
-      creature = Creature.new(creature_params)
-
-      # if creature saves, redirect to route that displays
-      # ONLY the newly created creature
-      if creature.save
-        redirect_to creature_path(creature)
-        # redirect_to creature_path(creature) is equivalent to:
-        # redirect_to "/creatures/#{creature.id}"
-      end
-    end
-
-  end
-  ```
-  
-  </p>
-</details>
-
-Make sure to `git add` and `git commit` again once you have `new`, `create`, and `show` working.
 
 ## Part III: Change a creature with `edit` (form) and `update` (database)
 
@@ -686,122 +391,7 @@ Make sure to `git add` and `git commit` again once you have `new`, `create`, and
 
 **Don't Give Up!!!**
 
-Editing a specific creature requires two methods:
-
-* `edit` displays a form with the existing creature info to be edited by the user
-* `update` changes the creature info in the database when the user submits the form
-
-#### 1. Define a route for the `edit` creature form
-
-<details>
-  <summary>Hint: updated routes</summary>
-  <p>
-  
-  ```ruby
-  #
-  # config/routes.rb
-  #
-
-  Rails.application.routes.draw do
-    root to: "creatures#index"
-
-    get "/creatures", to: "creatures#index", as: "creatures"
-    get "/creatures/new", to: "creatures#new", as: "new_creature"
-    post "/creatures", to: "creatures#create"
-    get "/creatures/:id", to: "creatures#show", as: "creature"
-    get "/creatures/:id/edit", to: "creatures#edit", as: "edit_creature"
-  end
-  ```
-  
-  </p>
-</details>
-
-#### 2. Set up the creatures `edit` action
-
-Using your `creatures#new` and `creatures#show` methods as inspiration, you can write the `creatures#edit` method in the creatures controller:
-
-<details>
-  <summary>Hint: updated controller pseudocode</summary>
-  <p>
-  
-  ```ruby
-  #
-  # app/controllers/creatures_controller.rb
-  #
-
-  class CreaturesController < ApplicationController
-
-    ...
-
-    # show the edit creature form
-    def edit
-      # get the creature id from the url params
-      
-      # use `creature_id` to find the creature in the database
-        # and save it to an instance variable
-      # render the edit view (it has access to instance variable)
-    end
-  end
-  ```
-  
-  </p>
-</details>
-
-
-<details>
-  <summary>Hint: updated controller code</summary>
-  <p>
-  
-  ```ruby
-  #
-  # app/controllers/creatures_controller.rb
-  #
-
-  class CreaturesController < ApplicationController
-
-    ...
-
-    # show the edit creature form
-    def edit
-      # get the creature id from the url params
-      creature_id = params[:id]
-
-      # use `creature_id` to find the creature in the database
-      # and save it to an instance variable
-      @creature = Creature.find_by_id(creature_id)
-
-      # render the edit view (it has access to instance variable)
-      # remember the default behavior is to render :edit
-    end
-
-  end
-  ```
-  
-  </p>
-</details>
-
-#### 3. Set up the view for the edit creature form
-
-Create an `edit.html.erb` view inside `views/creatures`. Jump-start the edit form by copying the form from `views/creatures/new.html.erb` into `views/creatures/edit.html.erb`:
-
-<details>
-  <summary>Hint: it might look like this</summary>
-  <p>
-  
-  ```html
-  <!-- app/views/creatures/edit.html.erb -->
-
-  <%= form_for @creature do |f| %>
-    <%= f.text_field :name %>
-    <%= f.text_area :description %>
-    <%= f.submit "Save Creature" %>
-  <% end %>
-  ```
-  
-  </p>
-</details>
-
-Go to `localhost:3000/creatures/1/edit` in the browser to see what it looks like so far.  Check the `method` and `action` of the form. Also look at the hidden input with `name="_method"`.  What is it doing? The Rails form helper knows to turn this same code into an edit form because you're on the edit page!
+`update` changes the creature info in the database when the user submits the form
 
 #### 4. Define a route to `update` a specific creature
 
@@ -820,10 +410,8 @@ The update route will use the `id` of the creature to be updated. In Express, yo
     root to: "creatures#index"
 
     get "/creatures", to: "creatures#index", as: "creatures"
-    get "/creatures/new", to: "creatures#new", as: "new_creature"
     post "/creatures", to: "creatures#create"
     get "/creatures/:id", to: "creatures#show", as: "creature"
-    get "/creatures/:id/edit", to: "creatures#edit", as: "edit_creature"
     patch "/creatures/:id", to: "creatures#update"
     # put "/creatures/:id", to: "creatures#update"    # optional
   end
@@ -887,18 +475,15 @@ In the `CreaturesController`, define an `update` method:
       creature_id = params[:id]
 
       # use `creature_id` to find the creature in the database
-      creature = Creature.find_by_id(creature_id)
+      @creature = Creature.find_by_id(creature_id)
 
       # whitelist params and save them to a variable
       creature_params = params.require(:creature).permit(:name, :description)
 
       # update the creature
-      creature.update_attributes(creature_params)
+      @creature.update_attributes(creature_params)
 
-      # redirect to show page for the updated creature
-      redirect_to creature_path(creature)
-      # redirect_to creature_path(creature) is equivalent to:
-      # redirect_to "/creatures/#{creature.id}"
+      render json: @creature
     end
 
   end
@@ -966,15 +551,12 @@ Now that `params` are whitelisted in two different places in the `CreaturesContr
 
       # use `creature_id` to find the creature in the database
       # and save it to an instance variable
-      creature = Creature.find_by_id(creature_id)
+      @creature = Creature.find_by_id(creature_id)
 
       # update the creature
-      creature.update_attributes(creature_params)  # this now calls the private method below!
+      @creature.update_attributes(creature_params)  # this now calls the private method below!
 
-      # redirect to show page for the updated creature
-      redirect_to creature_path(creature)
-      # redirect_to creature_path(creature) is equivalent to:
-      # redirect_to "/creatures/#{creature.id}"
+      render json: @creature
     end
     
     private
@@ -992,7 +574,7 @@ Now that `params` are whitelisted in two different places in the `CreaturesContr
 **Refactor the `create` action to use this private method as well.**
 
 
-Manually re-test your `creatures#create` method in the browser. Then, test your `creatures#update` method in the browser by editing the creature with an `id` of 1 (go to `localhost:3000/creatures/1/edit`). Then, `git add` and `git commit` your work.
+Manually re-test your `creatures#create` method in Postman. Then, test your `creatures#update` method in the Postman by editing the creature with an `id` of 1. Then, `git add` and `git commit` your work.
 
 ## Part IV: Delete a creature with `destroy` (database)
 
@@ -1018,10 +600,8 @@ Following a similar pattern to our other routes, create a route to `destroy` (de
     root to: "creatures#index"
 
     get "/creatures", to: "creatures#index", as: "creatures"
-    get "/creatures/new", to: "creatures#new", as: "new_creature"
     post "/creatures", to: "creatures#create"
     get "/creatures/:id", to: "creatures#show", as: "creature"
-    get "/creatures/:id/edit", to: "creatures#edit", as: "edit_creature"
     patch "/creatures/:id", to: "creatures#update"
     delete "/creatures/:id", to: "creatures#destroy"
   end
@@ -1089,10 +669,9 @@ In the `CreaturesController`, define an `destroy` method:
       # destroy the creature
       creature.destroy
 
-      # redirect to creatures index
-      redirect_to creatures_path
-      # redirect_to creatures_path is equivalent to:
-      # redirect_to "/creatures"
+      render json: {
+        msg: "Successfully Deleted"
+      }
     end
 
   end
@@ -1101,29 +680,118 @@ In the `CreaturesController`, define an `destroy` method:
   </p>
 </details>
 
-#### 3. Add a delete button
 
-Add a delete button to the view that displays a single creature:
-<details>
-  <summary>Hint: It could look something like:</summary>
-  <p>
+#### 4. Use `create-react-app` to build your client directory
 
-```html
-<!-- app/views/creatures/show.html.erb -->
+Once you have a working API, it's now time to tie that to a React app.
 
-<h3><%= @creature.name %></h3>
-<p><%=  @creature.description %></p>
-<%= button_to "Delete", @creature, method: :delete %>
+Initialize your React app by running this command in the root of your directory. Additionally, let's go ahead and install some packages we will use in React
+
+```bash
+create-react-app client
+cd client
+npm i axios styled-components react-router-dom
 ```
 
-  </p>
-</details>
+#### 5. Set up your proxy and express app to handle React
 
-Visit `localhost:3000/creatures/1` in the browser, and inspect the HTML for the delete button. Click the delete button to manually test this feature.
+Add a proxy to hit your local API in your client `package.json`
+```json
+...
+ "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:3001",
+  "dependencies": {
+...
+```
 
-At this point, you've created all the RESTful routes, implemented controller actions for each route, and made views for `index`, `show`, `new`, and `edit`. You've also created the `Creature` model in the database and manually tested that everything works.
+In your `app.js`, make sure you add the Express static middleware and you change your `app.get('/')` to handle the built React app.
 
-(Write down your stop time!!! How long did this run take?)
+```js
+// app.js
+...
+  app.use(express.static(`${__dirname}/client/build`))
+...
+  app.get('/', (req, res) => {
+    res.sendFile(`${__dirname}/client/build/index.html`)
+  })
+...
+```
+
+Also make sure to add a postinstall and dev step to the root package.json to help Heroku know how to deploy your app.
+
+```json
+ "engines": {
+   "node": 8.9.0
+ },
+ "scripts": {
+    "start": "node app.js",
+    "dev": "concurrently \"node app.js\" \"cd client && npm start\"",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd client && npm i && npm run build"
+  },
+```
+
+You should now be able to run both your API and React app by using the command `npm run dev`
+
+**ASIDE**: This is a great opportunity to deploy to Heroku!
+Make sure you follow these commands.
+```bash
+  heroku create
+  heroku addons:create mongolab:sandbox
+  git push heroku master
+
+  # If you need to seed your production database
+  heroku run node db/seeds.js
+```
+
+#### 6. Set up React Router and create Components for Routes
+
+First we will get rid of the boilerplate code in `App.js` and replace it with some `react-router` code
+
+```jsx
+import React, { Component } from 'react'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import Creatures from './components/Creatures'
+import SingleCreature from './components/SingleCreature'
+
+class App extends Component {
+  render () {
+    return (
+      <Router>
+        <div>
+          <Switch>
+            <Route exact path="/" component={Creatures}/>
+            <Route path="/:id" component={SingleCreature}/>
+          </Switch>
+        </div>
+      </Router>
+    )
+  }
+}
+
+export default App
+```
+
+#### 7. Read All and Create New
+Use the `Creatures` component to house components that allow you do the following:
+ - Get All Creatures and display them as a list of `Link`s.
+ - Click a button to toggle a form on and off.
+ - Input data into a form to create a new creature.
+
+Take a look at the [solution code](./express_bog/client/src) for hints
+
+#### 8. Read One, Update, and Delete
+Use the `SingleCreature` component to house components that allow you to get one creature, toggle a form to update the creature, and delete a creature
+Take a look at the [solution code](./express_bog/client/src) for hints
+
+#### 9. Introduce Styled Components
+Once you have the usability for creatures, use styled components to style your application.
+Keep these things in mind.  Feel free to also bring in libraries like `material-ui`
+
+- Does my app look good on mobile?
+- Can I add transitions and animations to this UI
+- Does this app look professional and polished?
 
 ## Additional Development Ideas for after Version 4
 
@@ -1135,4 +803,4 @@ At this point, you've created all the RESTful routes, implemented controller act
 
 ## CONGRATULATIONS! You have created a Bog App! Take a break, you look *Swamped*!
 
-![](https://cloud.githubusercontent.com/assets/7833470/11501240/83536030-97e7-11e5-8060-fa7666de7165.jpeg) -->
+![](https://cloud.githubusercontent.com/assets/7833470/11501240/83536030-97e7-11e5-8060-fa7666de7165.jpeg)

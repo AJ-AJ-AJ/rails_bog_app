@@ -79,6 +79,64 @@ cd bog-app-time-trials
 
 Create a new Express project:
 
+```bash
+ touch bog-express-one
+ cd bog-express-one
+ npm init -y
+ npm i express mongoose dotenv body-parser morgan concurrently
+ touch app.js
+```
+
+After installing your server side dependencies and creating your `app.js` it's time to open up your text editor and get to work!
+
+Add the following to your `app.js`:
+ - Import all of your server side dependencies (express, mongoose, etc)
+ - Set up `dotenv` to parse your environment variables
+ - Overwrite the mongoose Promise library with the global ES6 library
+ - Connect to the Mongoose database at `process.env.MONGODB_URI` (make sure you have a `.env` file where you define the address)
+ - Log when your database connects (a.k.a 'open') and when it errors
+ - Inject middleware (like `body-parser`) using `app.use`
+ - Set up a get request that sends back "Hello World"
+ - Tell your app to listen on port 3001, and console log when it connects.
+
+<details>
+  <summary>Example</summary>
+
+```js
+require('dotenv').config()
+const express = require('express')
+const mongoose = require('mongoose')
+const logger = require('morgan')
+const bodyParser = require('body-parser')
+const app = express()
+
+mongoose.Promise = global.Promise
+mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true})
+
+const db = mongoose.connection
+db.on('error', err => {
+  console.log(err)
+})
+
+db.on('open', () => {
+  console.log('Connected to MongoDB')
+})
+
+app.use(logger('dev'))
+app.use(bodyParser.json())
+
+app.get('/', (req, res) => {
+  res.send("Hello World")
+})
+
+const PORT = process.env.PORT || 3001
+
+app.listen(PORT, () => {
+  console.log('App is up and running on port ' + PORT)
+})
+```
+</details>
+
 Take a look at some previous examples to refresh you on how to set up an express app.[Sample Project 3](https://github.com/dphurley/sample_project_three)
 
 #### 2. Add a `db` directory and create a Mongoose model for Creatures
@@ -86,33 +144,65 @@ Define a new mongoose schema for Creatures and give it two attributes: `name` an
 
 Also create a seeds.js file and add a few test creatures to your database.  Verify that this works via the mongo command line.
 
-Example: 
-```js
-// ./db/seeds.js
-require('dotenv').config()
-const mongoose = require('mongoose')
-const { Creature } = require('./schema')
+<details>
+  <summary>Schema Example</summary>
 
-mongoose.Promise = global.Promise
-mongoose.connect(process.env.MONGODB_URI)
+  ```js
+  const mongoose = require('mongoose')
 
-const db = mongoose.connection
+  const Schema = mongoose.Schema
 
-const saved = async () => {
-  await Creature.remove()
-  const luke = new Creature({name: 'Luke', description: 'Jedi'})
-  await luke.save()
-  const darth = new Creature({name: 'Darth Vader', description: 'Father of Luke'})
-  await darth.save()
-  db.close()
-}
+  const CreatureSchema = new Schema({
+    name: String,
+    description: String
+  })
 
-saved()
-```
+  const Creature = mongoose.model('Creature', CreatureSchema)
+
+  module.exports = {
+    Creature
+  }
+  ```
+</details>
+
+
+<details>
+  <summary>Seeds Example</summary>
+
+  ```js
+  require('dotenv').config()
+  const mongoose = require('mongoose')
+  const { Creature } = require('./schema')
+
+  mongoose.Promise = global.Promise
+  mongoose.connect(process.env.MONGODB_URI)
+
+  const db = mongoose.connection
+
+  const saved = async () => {
+    await Creature.remove()
+    const luke = new Creature({name: 'Luke', description: 'Jedi'})
+    await luke.save()
+    const darth = new Creature({name: 'Darth Vader', description: 'Father of Luke'})
+    await darth.save()
+    db.close()
+  }
+
+  saved()
+  ```
+</details>
 
 #### 3. Create a routes directory and build out RESTful API routes for creatures.
+Remember to import the express router and your model from the `./db/schema` file.
 
-Make sure to import your routes into your `app.js` file.
+```js
+const express = require('express')
+const router = express.Router()
+
+const { Creature } = require('../db/schema.js')
+```
+
+
 
 Make sure there are routes for each RESTful action.
 - Get All Creatures
@@ -121,7 +211,95 @@ Make sure there are routes for each RESTful action.
 - Update A Creature
 - Delete A Creature
 
-Use Postman to test each routes
+Use Postman to test each routes.
+
+Make sure to import your routes into your `app.js` file.
+
+<details>
+  <summary>Index Route</summary>
+
+  ```js
+  router.get('/', async (req, res) => {
+    try {
+      const creatures = await Creature.find({})
+      res.json(creatures)
+    } catch (err) {
+      console.log(err)
+    }
+  })
+  ```
+</details>
+
+<details>
+  <summary>Show Route</summary>
+
+  ```js
+  router.get('/:id', async (req, res) => {
+    try {
+      const creatureId = req.params.id
+      const creature = await Creature.findById(creatureId)
+      res.json(creature)
+    } catch (err) {
+      console.log(err)
+      res.json(err)
+    }
+  })
+  ```
+</details>
+
+<details>
+  <summary>Create Route</summary>
+
+  ```js
+  router.post('/', async (req, res) => {
+    try {
+      const newCreature = req.body
+      const savedCreature = await Creature.create(newCreature)
+      res.json(savedCreature)
+    } catch (err) {
+      console.log(err)
+      res.status(500).json(err)
+    }
+  })
+  ```
+</details>
+
+<details>
+  <summary>Update Route</summary>
+
+  ```js
+  router.put('/:id', async (req, res) => {
+    try {
+      const creatureId = req.params.id
+      const updatedCreature = req.body
+      const savedCreature = await Creature.findByIdAndUpdate(creatureId, updatedCreature)
+      res.json(savedCreature)
+    } catch (err) {
+      console.log(err)
+      res.status(500).json(err)
+    }
+  })
+  ```
+</details>
+
+<details>
+  <summary>Delete Route</summary>
+
+  ```js
+  router.delete('/:id', async (req, res) => {
+    try {
+      const creatureId = req.params.id
+      await Creature.findByIdAndRemove(creatureId)
+      res.json({
+        msg: 'Successfully Deleted'
+      })
+    } catch (err) {
+      console.log(err)
+      res.status(500).json(err)
+    }
+  })
+  ```
+</details>
 
 #### 4. Use `create-react-app` to build your client directory
 
@@ -144,6 +322,19 @@ Add a proxy to hit your local API in your client `package.json`
   "private": true,
   "proxy": "http://localhost:3001",
   "dependencies": {
+...
+```
+
+In your `app.js`, make sure you add the Express static middleware and you change your `app.get('/')` to handle the built React app.
+
+```js
+// app.js
+...
+  app.use(express.static(`${__dirname}/client/build`))
+...
+  app.get('/', (req, res) => {
+    res.sendFile(`${__dirname}/client/build/index.html`)
+  })
 ...
 ```
 

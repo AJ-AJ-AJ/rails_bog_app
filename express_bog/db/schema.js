@@ -9,7 +9,6 @@ const CreatureSchema = new Schema({
 
 const Creature = mongoose.model('Creature', CreatureSchema)
 
-// Export each model so they can be required elsewhere
 module.exports = {
   Creature
 }

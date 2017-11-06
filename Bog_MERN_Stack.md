@@ -341,6 +341,9 @@ In your `app.js`, make sure you add the Express static middleware and you change
 Also make sure to add a postinstall and dev step to the root package.json to help Heroku know how to deploy your app.
 
 ```json
+ "engines": {
+   "node": 8.9.0
+ },
  "scripts": {
     "start": "node app.js",
     "dev": "concurrently \"node app.js\" \"cd client && npm start\"",
@@ -350,6 +353,13 @@ Also make sure to add a postinstall and dev step to the root package.json to hel
 ```
 
 You should now be able to run both your API and React app by using the command `npm run dev`
+
+**ASIDE**: This is a great opportunity to deploy to Heroku!
+Make sure you follow these commands.
+```bash
+  heroku create
+  heroku addons:create mongolab:sandbox
+```
 
 #### 6. Set up React Router and create Components for Routes
 

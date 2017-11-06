@@ -50,7 +50,7 @@ Or maybe Sir Didymus and The Bog of Eternal Stench...
 
 ## CRUD and REST Reference
 
-REST stands for **REpresentational State Transfer**. We will strictly adhere to RESTful *routing* for Rails.
+REST stands for **REpresentational State Transfer**. We will strictly adhere to RESTful *routing*.
 
 | Verb | Path | Action | Used for |
 | :--- | :--- | :--- | :--- |
@@ -74,88 +74,44 @@ mkdir bog-app-time-trials
 cd bog-app-time-trials
 ```
 
-#### 1. Set up a new Rails project
+#### 1. Set up a new Express project
 (Write down your start time!!!)
 
-Create a new Rails project:
+Create a new Express project:
+
+Take a look at some previous examples to refresh you on how to set up an express app.[Sample Project 3](https://github.com/dphurley/sample_project_three)
+
+#### 2. Add a `db` directory and create a Mongoose model for Creatures
+Define a new mongoose schema for Creatures and give it two attributes: `name` and `description`.
+
+Also create a seeds.js file and add a few test creatures to your database.  Verify that this works via the mongo command line.
+
+#### 3. Create a routes directory and build out RESTful API routes for creatures.
+
+Make sure to import your routes into your `app.js` file. 
+
+Use Postman to test your RESTful routes
+
+#### 4. Use `create-react-app` to build your client directory
+
+Initialize your React app by running this command in the root of your directory. Additionally, let's go ahead and install some packages we will use in React
 
 ```bash
-$  rails new bog_app_three -T -d postgresql
-$  cd bog_app_three
-$  rails db:create
-$  rails s
+create-react-app client
+cd client
+npm i axios styled-components react-router-dom
 ```
 
-Create your development database:
-```bash
-$  rails db:create
+#### 5. Set up your proxy and express app to handle React
+Add a proxy to hit your local API
+```json
+...
+ "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:3001",
+  "dependencies": {
+...
 ```
-
-> Watch Out! *If you're not careful, you may already have an existing/old database called bog_app_one or bog_app_two!*
-
-Run your local server:
-```bash
-$  rails s
-```
-Your app should be up and running at `localhost:3000`.
-
-> Watch Out! *You may already have a server running on localhost:3000!*
-
-#### 2. Add Bootstrap or Materialize to your project
-
-Search [Ruby Gems](https://rubygems.org/) for a gem that will help you install a styling library (Bootstrap, Materialize, etc.)
-
-**Note**: If you recieve errors about jQuery not being available, that is because the jQuery gem was removed as a default gem in Rails 5.  You can install it here [jQuery Rails](https://rubygems.org/gems/jquery-rails)
-
-#### 3. Define the `root` and creatures `index` routes
-
-In your text editor, open up `config/routes.rb`. Inside the routes `draw` block, erase all the commented text.
-
-> _You're about to see a hint! Throughout the instructions, there will be hints like this one that show you parts of the code. When you're running through the project a second time, try to use these less. The third time, try not to use them at all._
-
-<details>
-  <summary>Hint: <code>config/routes.rb</code> should now look exactly like this...</summary>
-  <p>
-  
-  ```ruby
-  #
-  # config/routes.rb
-  #
-  Rails.application.routes.draw do
-
-  end
-  ```
-  
-  </p>
-</details>
-<br>
-
-Your routes tell your app how to direct **HTTP requests** to **controller actions**. Define your `root` route and your creatures `index` route to refer to the index method in the creatures controller:
-
-<details>
-  <summary>Hint: updated routes</summary>
-  <p>
-  
-  ```ruby
-  #
-  # config/routes.rb
-  #
-
-  Rails.application.routes.draw do
-    root "creatures#index"
-
-    get "/creatures", to: "creatures#index", as: "creatures"
-
-  end
-  ```
-  
-  </p>
-</details>
-<br>
-
-
-
-In the Terminal, running `rails routes` will list all your routes. You'll see that some routes have a "prefix" listed. These routes have associated route helpers, which are methods Rails creates to generate URLs. The format of a route helper is `prefix_path`. For example, `creatures_path` is the full route helper for `GET /creatures` (the creatures index). We often use route helpers to generate URLs in forms, links, and controllers.
 
 #### 4. Set up the creatures controller and `index` action
 

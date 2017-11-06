@@ -20,11 +20,13 @@ db.on('open', () => {
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
+app.use(express.static(`${__dirname}/client/build`))
 
 const creatureRoutes = require('./routes/creatureController')
 app.use('/api/creatures', creatureRoutes)
+
 app.get('/', (req, res) => {
-  res.send('Hello World')
+  res.sendFile(`${__dirname}/client/build/index.html`)
 })
 
 const PORT = process.env.PORT || 3001

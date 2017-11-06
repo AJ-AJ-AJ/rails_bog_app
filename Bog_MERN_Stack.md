@@ -399,11 +399,11 @@ Use the `Creatures` component to house components that allow you do the followin
  - Click a button to toggle a form on and off.
  - Input data into a form to create a new creature.
 
-Take a look at the [solution code]() for hints
+Take a look at the [solution code](./express_bog/client) for hints
 
 #### 8. Read One, Update, and Delete
 Use the `SingleCreature` component to house components that allow you to get one creature, toggle a form to update the creature, and delete a creature
-Take a look at the [solution code]() for hints
+Take a look at the [solution code](./express_bog/client) for hints
 
 #### 9. Introduce Styled Components
 Once you have the usability for creatures, use styled components to style your application.

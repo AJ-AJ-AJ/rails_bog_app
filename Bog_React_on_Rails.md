@@ -659,10 +659,10 @@ In the `CreaturesController`, define an `destroy` method:
 
       # use `creature_id` to find the creature in the database
       # and save it to a variable
-      creature = Creature.find_by_id(creature_id)
+      @creature = Creature.find_by_id(creature_id)
 
       # destroy the creature
-      creature.destroy
+      @creature.destroy
 
       render json: {
         msg: "Successfully Deleted"

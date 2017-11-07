@@ -9,7 +9,7 @@ Everyone does blog apps. Now, you're going to work on a **bog app**. Researchers
 It's time to put all your Rails knowledge into practice! In this project, you will:
 
 - Review **CRUD** in the context of a Rails application.
-- Implement **form helpers** in a  Rails application.
+- Build a React app on interact with the Rails API
 - Build memory for the steps required to create a Rails app.
 
 ### Workflow
@@ -100,6 +100,8 @@ Your app should be up and running at `localhost:3000`.
 
 > Watch Out! *You may already have a server running on localhost:3000!*
 
+### Building the API
+
 #### 2. Define the `root` and creatures `index` routes
 
 In your text editor, open up `config/routes.rb`. Inside the routes `draw` block, erase all the commented text.
@@ -123,7 +125,7 @@ In your text editor, open up `config/routes.rb`. Inside the routes `draw` block,
 </details>
 <br>
 
-Your routes tell your app how to direct **HTTP requests** to **controller actions**. Define your `root` route and your creatures `index` route to refer to the index method in the creatures controller:
+Your routes tell your app how to direct **HTTP requests** to **controller actions**. Since our Rails app is only exposing API endpoints for our React app to use, let's wrap our first route in a `namespace` so our routes will look like '/api/creatures/':
 
 <details>
   <summary>Hint: updated routes</summary>
@@ -135,10 +137,9 @@ Your routes tell your app how to direct **HTTP requests** to **controller action
   #
 
   Rails.application.routes.draw do
-    root "creatures#index"
-
-    get "/creatures", to: "creatures#index", as: "creatures"
-
+    namespace :api do
+      get "/creatures", to: "creatures#index", as: "creatures"
+    end
   end
   ```
   
@@ -148,12 +149,12 @@ Your routes tell your app how to direct **HTTP requests** to **controller action
 
 In the Terminal, running `rails routes` will list all your routes. You'll see that some routes have a "prefix" listed. These routes have associated route helpers, which are methods Rails creates to generate URLs. The format of a route helper is `prefix_path`. For example, `creatures_path` is the full route helper for `GET /creatures` (the creatures index). We often use route helpers to generate URLs in forms, links, and controllers.
 
-#### 4. Set up the creatures controller and `index` action
+#### 3. Set up the creatures controller and `index` action
 
 Run the following command in the Terminal to generate a controller for creatures:
 
 ```bash
-$  rails g controller Creatures
+$  rails g controller Api::Creatures
 ```
 
 Next, define the `creatures#index` action in the creatures controller. The variable `@creatures` should be all of the creatures in the db:
@@ -163,15 +164,14 @@ Next, define the `creatures#index` action in the creatures controller. The varia
   
   ```ruby
   #
-  # app/controllers/creatures_controller.rb
+  # app/controllers/api/creatures_controller.rb
   #
-  class CreaturesController < ApplicationController
+  class Api::CreaturesController < ApplicationController
   # display all creatures
     def index
       # get all creatures from db and save to instance variable
       @creatures = Creature.all
-      # render the index view (it has access to instance variable)
-      # remember the default behavior is to render :index
+
       render json: @creatures
     end
   end
@@ -182,7 +182,7 @@ Next, define the `creatures#index` action in the creatures controller. The varia
 
 
 
-#### 5. Set up the `creature` model
+#### 4. Set up the `creature` model
 
 Run the following command in the Terminal to generate the `Creature` model:
 
@@ -198,7 +198,7 @@ $  rails db:migrate
 
 > Watch Out! *If you're not careful, you may already have an existing/old database called bog_app_one or bog_app_two, and it may already contain a table called `creatures`!*
 
-#### 6. Create a creature
+#### 5. Create a creature
 
 In the Terminal, enter the Rails console. The Rails console is built on top of `irb`, and it has access to your Rails project. Use it to create a new instance of a creature.  This just lets us confirm that the model class is set up and the migration has run successfully.
 
@@ -207,7 +207,7 @@ $  rails c
 irb(main):001:0> Creature.create({name: "Yoda", description: "Little green man"})
 ```
 
-#### 7. Seed your database
+#### 6. Seed your database
 
 When you create an application in development, you typically want some mock data to play with. In Rails, you can just drop this into the `db/seeds.rb` file.
 
@@ -247,14 +247,13 @@ Your API needs to be able to post a new creature.  Let's add a `create` action t
   #
 
   Rails.application.routes.draw do
-    root to: "creatures#index"
-
-    get "/creatures", to: "creatures#index", as: "creatures"
-    post "/creatures", to: "creatures#create"
-
+    namespace :api do
+      get "/creatures", to: "creatures#index", as: "creatures"
+      post "/creatures", to: "creatures#create"
+    end
   end
   ```
-  
+
   </p>
 </details>
 
@@ -268,10 +267,10 @@ The `POST /creatures` maps to the `creatures#create` controller action, so the n
 
   ```ruby
   #
-  # app/controllers/creatures_controller.rb
+  # app/controllers/api/creatures_controller.rb
   #
 
-  class CreaturesController < ApplicationController
+  class Api::CreaturesController < ApplicationController
 
     # ...
 
@@ -293,10 +292,10 @@ The `POST /creatures` maps to the `creatures#create` controller action, so the n
 
   ```ruby
   #
-  # app/controllers/creatures_controller.rb
+  # app/controllers/api/creatures_controller.rb
   #
 
-  class CreaturesController < ApplicationController
+  class Api:CreaturesController < ApplicationController
 
     # ...
 
@@ -306,13 +305,11 @@ The `POST /creatures` maps to the `creatures#create` controller action, so the n
       creature_params = params.require(:creature).permit(:name, :description)
 
       # create a new creature from `creature_params`
-      creature = Creature.new(creature_params)
+      @creature = Creature.new(creature_params)
 
-      # if creature saves, redirect to route that displays all creatures
-      if creature.save
-        redirect_to creatures_path
-        # redirect_to creatures_path is equivalent to:
-        # redirect_to "/creatures"
+      # if creature saves, render the new creature in JSON
+      if @creature.save
+        render json: @creature
       end
     end
   end
@@ -321,7 +318,7 @@ The `POST /creatures` maps to the `creatures#create` controller action, so the n
   </p>
 </details>
 
-#### 7. Define a route to `show` a specific creature
+#### 3. Define a route to `show` a specific creature
 
 Right now, your app redirects to `/creatures` after creating a new creature, and the new creature shows up at the bottom of the page. Let's make a route for users to see a specific creature. Then, you'll be able to show a new creature by itself right after it's created.
 
@@ -337,11 +334,11 @@ First, define a `show` route.
   #
 
   Rails.application.routes.draw do
-    root to: "creatures#index"
-
-    get "/creatures", to: "creatures#index", as: "creatures"
-    post "/creatures", to: "creatures#create"
-    get "/creatures/:id", to: "creatures#show", as: "creature"
+    namespace :api do
+      get "/creatures", to: "creatures#index", as: "creatures"
+      post "/creatures", to: "creatures#create"
+      get "/creatures/:id", to: "creatures#show", as: "creature"
+    end
   end
   ```
   
@@ -356,10 +353,10 @@ Now that you have your `show` route, set up the controller action for `creatures
 
   ```ruby
   #
-  # app/controllers/creatures_controller.rb
+  # app/controllers/api/creatures_controller.rb
   #
 
-  class CreaturesController < ApplicationController
+  class Api::CreaturesController < ApplicationController
 
     ...
 
@@ -372,8 +369,6 @@ Now that you have your `show` route, set up the controller action for `creatures
       # and save it to an instance variable
       @creature = Creature.find_by_id(creature_id)
 
-      # render the show view (it has access to instance variable)
-      # remember the default behavior is to render :show
       render json: @creature
     end
 
@@ -393,7 +388,7 @@ Now that you have your `show` route, set up the controller action for `creatures
 
 `update` changes the creature info in the database when the user submits the form
 
-#### 4. Define a route to `update` a specific creature
+#### 1. Define a route to `update` a specific creature
 
 The update route will use the `id` of the creature to be updated. In Express, you decided between `PUT /creatures/:id` and `PATCH /creatures/:id`, depending on the type of update you wanted to do. In Rails, the default assumption is that you'll have both! However, we'll only **need** to add `PATCH /creatures/:id` to our routes.
 
@@ -407,13 +402,13 @@ The update route will use the `id` of the creature to be updated. In Express, yo
   #
 
   Rails.application.routes.draw do
-    root to: "creatures#index"
-
-    get "/creatures", to: "creatures#index", as: "creatures"
-    post "/creatures", to: "creatures#create"
-    get "/creatures/:id", to: "creatures#show", as: "creature"
-    patch "/creatures/:id", to: "creatures#update"
-    # put "/creatures/:id", to: "creatures#update"    # optional
+    namespace :api do
+      get "/creatures", to: "creatures#index", as: "creatures"
+      post "/creatures", to: "creatures#create"
+      get "/creatures/:id", to: "creatures#show", as: "creature"
+      patch "/creatures/:id", to: "creatures#update"
+      # put "/creatures/:id", to: "creatures#update"    # optional
+    end
   end
   ```
   
@@ -422,7 +417,7 @@ The update route will use the `id` of the creature to be updated. In Express, yo
 
 Run `rails routes` in the Terminal to see the newly created update routes.
 
-#### 5. Set up the creatures `update` action
+#### 2. Set up the creatures `update` action
 
 In the `CreaturesController`, define an `update` method:
 
@@ -432,10 +427,10 @@ In the `CreaturesController`, define an `update` method:
 
   ```ruby
   #
-  # app/controllers/creatures_controller.rb
+  # app/controllers/api/creatures_controller.rb
   #
 
-  class CreaturesController < ApplicationController
+  class Api::CreaturesController < ApplicationController
 
     ...
 
@@ -445,7 +440,7 @@ In the `CreaturesController`, define an `update` method:
       # use `creature_id` to find the creature in the database and save to variable
       # whitelist params 
       # update the creature based on params
-      # redirect to show page for the updated creature
+      # render JSON of updated creature
     end
 
   end
@@ -462,10 +457,10 @@ In the `CreaturesController`, define an `update` method:
 
   ```ruby
   #
-  # app/controllers/creatures_controller.rb
+  # app/controllers/api/creatures_controller.rb
   #
 
-  class CreaturesController < ApplicationController
+  class Api::CreaturesController < ApplicationController
 
     ...
 
@@ -492,7 +487,7 @@ In the `CreaturesController`, define an `update` method:
   </p>
 </details>
 
-#### 6. Refactor whitelisted `params`.
+#### 3. Refactor whitelisted `params`.
 
 Now that `params` are whitelisted in two different places in the `CreaturesController`, refactor so that these params are set up in their own method.   This method can (and should!) be `private` because it will only ever be used inside the `CreaturesController` class definition.
 
@@ -503,10 +498,10 @@ Now that `params` are whitelisted in two different places in the `CreaturesContr
 
   ```ruby
   #
-  # app/controllers/creatures_controller.rb
+  # app/controllers/api/creatures_controller.rb
   #
 
-  class CreaturesController < ApplicationController
+  class Api::CreaturesController < ApplicationController
 
     ...
 
@@ -516,7 +511,6 @@ Now that `params` are whitelisted in two different places in the `CreaturesContr
       # use `creature_id` to find the creature in the database
         # and save it to an instance variable
       # update the creature based on whitelisted params returned by private method
-      # redirect to show page for the updated creature
     end
     
     private
@@ -537,10 +531,10 @@ Now that `params` are whitelisted in two different places in the `CreaturesContr
 
   ```ruby
   #
-  # app/controllers/creatures_controller.rb
+  # app/controllers/api/creatures_controller.rb
   #
 
-  class CreaturesController < ApplicationController
+  class Api::CreaturesController < ApplicationController
 
     ...
 
@@ -597,13 +591,14 @@ Following a similar pattern to our other routes, create a route to `destroy` (de
   #
 
   Rails.application.routes.draw do
-    root to: "creatures#index"
-
-    get "/creatures", to: "creatures#index", as: "creatures"
-    post "/creatures", to: "creatures#create"
-    get "/creatures/:id", to: "creatures#show", as: "creature"
-    patch "/creatures/:id", to: "creatures#update"
-    delete "/creatures/:id", to: "creatures#destroy"
+    namespace :api do
+      get "/creatures", to: "creatures#index", as: "creatures"
+      post "/creatures", to: "creatures#create"
+      get "/creatures/:id", to: "creatures#show", as: "creature"
+      patch "/creatures/:id", to: "creatures#update"
+      # put "/creatures/:id", to: "creatures#update"    # optional
+      delete "/creatures/:id", to: "creatures#destroy"
+    end
   end
   ```
   
@@ -623,10 +618,10 @@ In the `CreaturesController`, define an `destroy` method:
   
   ```ruby
   #
-  # app/controllers/creatures_controller.rb
+  # app/controllers/api/creatures_controller.rb
   #
 
-  class CreaturesController < ApplicationController
+  class Api::CreaturesController < ApplicationController
 
     ...
 
@@ -650,10 +645,10 @@ In the `CreaturesController`, define an `destroy` method:
   
   ```ruby
   #
-  # app/controllers/creatures_controller.rb
+  # app/controllers/api/creatures_controller.rb
   #
 
-  class CreaturesController < ApplicationController
+  class Api::CreaturesController < ApplicationController
 
     ...
 
@@ -681,7 +676,9 @@ In the `CreaturesController`, define an `destroy` method:
 </details>
 
 
-#### 4. Use `create-react-app` to build your client directory
+### Part V: Building the React app
+
+#### 1.  Use `create-react-app` to build your client directory
 
 Once you have a working API, it's now time to tie that to a React app.
 
@@ -693,7 +690,7 @@ cd client
 npm i axios styled-components react-router-dom
 ```
 
-#### 5. Set up your proxy and express app to handle React
+#### 2. Set up your proxy and Rails app to handle React
 
 Add a proxy to hit your local API in your client `package.json`
 ```json
@@ -705,47 +702,55 @@ Add a proxy to hit your local API in your client `package.json`
 ...
 ```
 
-In your `app.js`, make sure you add the Express static middleware and you change your `app.get('/')` to handle the built React app.
+Next, create a `Procfile.dev` file to allow foreman to run multiple command line apps at once.  Make sure the file looks like this.
 
-```js
-// app.js
-...
-  app.use(express.static(`${__dirname}/client/build`))
-...
-  app.get('/', (req, res) => {
-    res.sendFile(`${__dirname}/client/build/index.html`)
-  })
-...
+```
+  web: sh -c 'cd client && PORT=3000 npm start'
+  api: rails s -p 3001
 ```
 
-Also make sure to add a postinstall and dev step to the root package.json to help Heroku know how to deploy your app.
+After creating the Procfile, create a `package.json` at the root level of your project.  This will allow Heroku to understand the `postinstall` steps as well as understand what version on Node it should use to build the React side of the app.
 
 ```json
- "engines": {
-   "node": 8.9.0
- },
- "scripts": {
-    "start": "node app.js",
-    "dev": "concurrently \"node app.js\" \"cd client && npm start\"",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "cd client && npm i && npm run build"
+{
+  "name": "bog_app",
+  "engines": {
+    "node": "8.9.0"
   },
+  "scripts": {
+    "build": "cd client && npm install && npm run build && cd ..",
+    "deploy": "cp -a client/build/. public/",
+    "postinstall": "npm run build && npm run deploy && echo 'Client built!'"
+  }
+}
 ```
 
-You should now be able to run both your API and React app by using the command `npm run dev`
+You should now be able to run both your API and React app by using the command `foreman start -f Procfile.dev`
 
 **ASIDE**: This is a great opportunity to deploy to Heroku!
-Make sure you follow these commands.
-```bash
-  heroku create
-  heroku addons:create mongolab:sandbox
-  git push heroku master
+Before you push, make sure you have a file called `Procfile` (NOT `Procfile.dev`) that tells Heroku how to run a rails app.  It should just have one line that looks like this.
 
-  # If you need to seed your production database
-  heroku run node db/seeds.js
+```
+  web: rails s
 ```
 
-#### 6. Set up React Router and create Components for Routes
+Afterwards, follow these commands to push your app to Heroku.
+```bash
+  heroku create
+  # Tell Heroku that you want both the Ruby and Node environments to build your project in.
+  heroku buildpacks:add --index 1 heroku/ruby 
+  heroku buildpacks:add --index 2 heroku/nodejs
+
+  git push heroku master
+
+  # Set up your production database
+  heroku run rails db:migrate db:seed
+```
+
+>If you receive an error along the lines of DB not existing, run the following command and try your migrations again. 
+>heroku addons:create heroku-postgresql:hobby-dev
+
+#### 3. Set up React Router and create Components for Routes
 
 First we will get rid of the boilerplate code in `App.js` and replace it with some `react-router` code
 
@@ -773,19 +778,19 @@ class App extends Component {
 export default App
 ```
 
-#### 7. Read All and Create New
+#### 4. Read All and Create New
 Use the `Creatures` component to house components that allow you do the following:
  - Get All Creatures and display them as a list of `Link`s.
  - Click a button to toggle a form on and off.
  - Input data into a form to create a new creature.
 
-Take a look at the [solution code](./express_bog/client/src) for hints
+Take a look at the [solution code](./rails_bog/client/src) for hints
 
-#### 8. Read One, Update, and Delete
+#### 5. Read One, Update, and Delete
 Use the `SingleCreature` component to house components that allow you to get one creature, toggle a form to update the creature, and delete a creature
-Take a look at the [solution code](./express_bog/client/src) for hints
+Take a look at the [solution code](./rails_bog/client/src) for hints
 
-#### 9. Introduce Styled Components
+#### 6. Introduce Styled Components
 Once you have the usability for creatures, use styled components to style your application.
 Keep these things in mind.  Feel free to also bring in libraries like `material-ui`
 

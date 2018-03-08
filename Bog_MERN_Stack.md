@@ -192,7 +192,8 @@ Also create a seeds.js file and add a few test creatures to your database.  Veri
   ```
   
   ---or---
-    ```js
+  
+  ```js
   require('dotenv').config()
   const mongoose = require('mongoose')
   const { Creature } = require('./schema')
@@ -212,6 +213,7 @@ Also create a seeds.js file and add a few test creatures to your database.  Veri
     db.close()
   })
   ```
+  
 </details>
 
 #### 3. Create a routes directory and build out RESTful API routes for creatures.

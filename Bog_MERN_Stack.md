@@ -80,7 +80,7 @@ cd bog-app-time-trials
 Create a new Express project:
 
 ```bash
- touch bog-express-one
+ mkdir bog-express-one
  cd bog-express-one
  npm init -y
  npm i express mongoose dotenv body-parser morgan concurrently
@@ -110,8 +110,7 @@ const logger = require('morgan')
 const bodyParser = require('body-parser')
 const app = express()
 
-mongoose.Promise = global.Promise
-mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true})
+mongoose.connect(process.env.MONGODB_URI)
 
 const db = mongoose.connection
 db.on('error', err => {
@@ -178,7 +177,7 @@ Also create a seeds.js file and add a few test creatures to your database.  Veri
   mongoose.connect(process.env.MONGODB_URI)
 
   const db = mongoose.connection
-
+  // using async/await
   const saved = async () => {
     await Creature.remove()
     const luke = new Creature({name: 'Luke', description: 'Jedi'})
@@ -189,6 +188,28 @@ Also create a seeds.js file and add a few test creatures to your database.  Veri
   }
 
   saved()
+  ```
+  
+  ---or---
+    ```js
+  require('dotenv').config()
+  const mongoose = require('mongoose')
+  const { Creature } = require('./schema')
+
+  mongoose.Promise = global.Promise
+  mongoose.connect(process.env.MONGODB_URI)
+
+  const db = mongoose.connection
+  // using Promises
+  Creature.remove().then(() => {
+    const luke = new Creature({name: 'Luke', description: 'Jedi'})
+    return luke.save()
+  }).then(() => {
+    const darth = new Creature({name: 'Darth Vader', description: 'Father of Luke'})
+    return darth.save()
+  }).then(() => {
+    db.close()
+  })
   ```
 </details>
 
@@ -226,6 +247,16 @@ Make sure to import your routes into your `app.js` file.
     } catch (err) {
       console.log(err)
     }
+  })
+  ```
+  --- or ---
+  ```js
+  router.get('/', (req, res) => {
+    Creature.find().then((creatures) => {
+      res.json(creatures)
+    }).catch((err) => {
+      console.log(err)
+    })
   })
   ```
 </details>
@@ -318,10 +349,7 @@ npm i axios styled-components react-router-dom
 Add a proxy to hit your local API in your client `package.json`
 ```json
 ...
- "version": "0.1.0",
-  "private": true,
   "proxy": "http://localhost:3001",
-  "dependencies": {
 ...
 ```
 
@@ -332,7 +360,8 @@ In your `app.js`, make sure you add the Express static middleware and you change
 ...
   app.use(express.static(`${__dirname}/client/build`))
 ...
-  app.get('/', (req, res) => {
+  //below your api routes
+  app.get('/*', (req, res) => {
     res.sendFile(`${__dirname}/client/build/index.html`)
   })
 ...
@@ -342,7 +371,7 @@ Also make sure to add a postinstall and dev step to the root package.json to hel
 
 ```json
  "engines": {
-   "node": 8.9.0
+   "node": 9.7.0
  },
  "scripts": {
     "start": "node app.js",
